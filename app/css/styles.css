@@ -1,0 +1,269 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  color: #333;
+  font-size: 100%;
+  font-family: Helvetica, arial, sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: #600;
+}
+
+ul {
+  list-style: none;
+}
+
+.wrapper {
+  max-width: 67em;
+  margin: 0 auto;
+}
+
+header {
+  color: #600;
+  padding: 1rem;
+}
+
+@media (min-width: 46.25rem) {
+  header {
+    padding: 0x;
+  }
+}
+
+.info {
+  width: 100%;
+  background-color: #f0dfb4;
+  padding: .5rem;
+  border: 1px solid #600;
+  font-size: 0.875rem;
+  margin-right: 2em;
+  margin-bottom: 1em;
+  float: left;
+}
+
+.info th {
+  text-align: left;
+}
+
+.info ul {
+  float: left;
+  width: 40%;
+}
+
+@media (min-width: 46.25rem) {
+  .info ul {
+    margin-top: 1em;
+    width: 100%;
+  }
+}
+
+.info table {
+  float: right;
+  width: 40%;
+}
+
+@media (min-width: 46.25rem) {
+  .info table {
+    float: none;
+    width: 100%;
+  }
+}
+
+@media (min-width: 46.25rem) {
+  .info {
+    position: absolute;
+    top: 0;
+    left: -12rem;
+    width: 11rem;
+  }
+}
+
+article {
+  margin: 0 1em 0 1em;
+  position: relative;
+}
+
+article h2 {
+  color: #600;
+}
+
+@media (min-width: 46.25rem) {
+  article {
+    margin: 2em 0 0 2em;
+  }
+}
+
+blockquote {
+  width: 100%;
+  padding: 1em;
+  font-size: 1.5em;
+  color: #600;
+  font-style: italic;
+}
+
+@media (min-width: 46.25rem) {
+  blockquote {
+    float: right;
+    width: 40%;
+  }
+}
+
+p {
+  margin: 1em 0;
+}
+
+ul {
+  list-style: none;
+}
+
+img {
+  width: 100%;
+  height: auto;
+}
+
+/*nav a:before {
+	padding-left: 1em;
+	content: "Q";
+	}*/
+.p-reviews .t-reviews,
+.p-recipes .t-recipes {
+  color: #fff;
+  background: #600;
+}
+
+.main-nav {
+  background: #eee;
+  margin-bottom: 1em;
+}
+
+.main-nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.main-nav li {
+  flex: 1 1 auto;
+}
+
+.main-nav a {
+  padding: .5rem 0.25rem;
+  font-size: 1rem;
+  font-weight: bold;
+  display: flex;
+  align-items: flex-start;
+  color: #600;
+  background-color: #f0dfb4;
+}
+
+.main-nav a:hover, .main-nav a:focus {
+  background-color: #600;
+  color: #fff;
+}
+
+.main-nav a:hover svg, .main-nav a:focus svg {
+  fill: #fff;
+}
+
+.main-nav a:hover span, .main-nav a:focus span {
+  color: #fff;
+}
+
+@media (min-width: 46.25rem) {
+  .main-nav a {
+    font-size: 1.5rem;
+    padding: 1.25rem 0.5rem;
+  }
+}
+
+.main-nav span {
+  display: none;
+}
+
+@media (min-width: 46.25rem) {
+  .main-nav span {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: normal;
+    color: #888;
+    margin: 0.25rem 0 0 0;
+  }
+}
+
+.main-nav .icon {
+  width: 16px;
+  height: 16px;
+  float: left;
+  margin-right: 0.5rem;
+  fill: #999;
+}
+
+@media (min-width: 46.25rem) {
+  .main-nav .icon {
+    width: 25px;
+    height: 25px;
+  }
+}
+
+.main-nav.outlines * {
+  outline: 1px solid rgba(255, 0, 0, 0.5);
+}
+
+.p-home article {
+  margin-left: 1rem;
+}
+
+.recipes-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.recipes-list li {
+  box-sizing: border-box;
+  background: rgba(240, 223, 180, 0.25);
+  padding: 0.875rem;
+  flex: 1 0 100%;
+  margin-top: 0.875rem;
+  margin-right: 0.875rem;
+}
+
+@media (min-width: 46.25rem) {
+  .recipes-list li {
+    flex: 1 0 calc(50% - 0.875rem);
+  }
+}
+
+.recipes-list img {
+  width: 30%;
+  float: left;
+  margin-right: 0.875rem;
+}
+
+@media (min-width: 46.25rem) {
+  .recipes-list img {
+    width: 50%;
+  }
+}
+
+.recipe-detail-image {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.recipe-thumbs {
+  width: 100%;
+  margin: 1rem 0;
+  display: flex;
+}
+
+.recipe-thumbs img {
+  width: 100%;
+  padding: 0 0.5rem;
+}
+
+/*# sourceMappingURL=styles.css.map */

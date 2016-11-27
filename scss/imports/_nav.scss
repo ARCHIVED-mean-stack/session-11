@@ -1,0 +1,77 @@
+.main-nav {
+	background: #eee;
+	margin-bottom: 1em;
+
+	ul {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+	li {
+		flex: 1 1 auto;
+	}
+	a {
+		padding: .5rem 0.25rem;
+		font-size: 1rem;
+		// max-width: 140px;
+		font-weight: bold;
+		display: flex;
+		align-items: flex-start;
+		color: $reddish;
+		background-color: $tan;
+		&:hover, &:focus {
+			background-color: $reddish;
+			color: $white;
+			svg {
+				fill: $white; 
+			}
+			span {
+				color: $white; 
+			}
+		}
+		@media (min-width: $break-one) {
+			font-size: 1.5rem; 
+			padding: 1.25rem 0.5rem;
+		}
+	}
+
+	span {
+		display: none;
+
+		@media (min-width: $break-one) {
+			display: block;
+			font-size: 0.875rem;
+			font-weight: normal;
+			color: #888;
+			margin: 0.25rem 0 0 0;
+		}
+	}
+
+	.icon {
+		width: 16px;
+		height: 16px;
+		float: left;
+		margin-right: 0.5rem;
+		fill: #999;
+
+		@media (min-width: $break-one) {
+			width: 25px;
+			height: 25px;
+		}
+	}
+	&.outlines {
+		* {
+			outline: 1px solid rgba(red, 0.5); 
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
