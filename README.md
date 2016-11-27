@@ -1,6 +1,6 @@
 #MEAN Session Twelve
 
-In this class we pick up our Recipes page and add an api to the already built front end.
+In this class we pick up our Recipes page and add an api to the (already built) front end.
 
 `$ npm install --save express`
 
@@ -48,10 +48,12 @@ A peak inside the response:
 
 ```js
 app.get('/', function (req, res) {
-    res.send('testing 123\n');
+    res.send('Return JSON or HTML View');
     console.dir(res);
 });
 ```
+
+Refresh the browser and note the res (response) object being dumped into the console.
 
 Note that the server needs to be restarted in order for us to see the results. 
 
@@ -61,7 +63,7 @@ Install nodemon:
 
 `sudo npm install --save-dev nodemon`
 
-Run the app using `nodemon server.js` and make a change to res.send in server.js. Note the app restarts. Refresh the browser and note the res (response) object being dumped into the console.
+Run the app using `nodemon server.js` and make a change to res.send in server.js. Note the app restarts. 
 
 You wil need to keep an eye on the nodemon process during this exercise to see if it is hanging.
 
@@ -89,6 +91,8 @@ You can see the json in the view.
 
 A [Mongo Driver](http://mongoosejs.com) to model your application data.
 
+`npm install mongoose -g`
+
 Use NPM to install this dependency and update your package.json file.
 
 `npm install mongoose --save`
@@ -105,11 +109,6 @@ Use NPM to install this dependency and update your package.json file.
 ###Update server.js:
 
 ```js
-// server.js
-
-// BASE SETUP
-// =============================================================================
-
 // call the packages we need
 
 var express = require('express');
@@ -145,15 +144,13 @@ app.use('/api', router);
 // START THE SERVER
 // =============================================================================
 app.listen(port);
-console.log('Magic happens on port ' + port);
+console.log('Listening on port ' + port);
 ```
 
 Test using GET in postman
 
 - We're requiring the Mongoose module which will communicate with Mongo for us. 
-
 - The mongoUri is a location to the Mongo DB that Mongoose will create if there is not one there already. 
-
 - We configured Express to parse requests' bodies.
 
 
@@ -180,7 +177,7 @@ The last line creates the Recipe model object, with built in Mongo interfacing m
  
 Ensure that `var Recipe = require('./app/models/recipe');` is in server.js
 
-```
+```js
 // server.js
 
 // BASE SETUP
@@ -192,6 +189,7 @@ var Recipe = require('./app/models/recipe');;
 
 ...
 ```
+and
 
 ```js
 router.use(function(req, res, next) {
@@ -202,11 +200,6 @@ router.use(function(req, res, next) {
 ```
 
 ```js
-// server.js
-
-// BASE SETUP
-// =============================================================================
-
 // call the packages we need
 
 var express = require('express');
@@ -254,7 +247,7 @@ app.listen(port);
 console.log('Magic happens on port ' + port);
 ```
 
-##Creating a Recipe
+##Saving a Simple Recipe
 
 ```js
 // more routes for our API will happen here
@@ -281,12 +274,7 @@ router.route('/recipes')
 ```
 
 
-```
-// server.js
-
-// BASE SETUP
-// =============================================================================
-
+```js
 // call the packages we need
 
 var express = require('express');
@@ -356,7 +344,7 @@ console.log('Magic happens on port ' + port);
 
 ##Getting All Recipes
 
-```
+```js
 // get all the recipes (accessed at GET http://localhost:8080/api/recipes)
     .get(function(req, res) {
         Recipe.find(function(err, recipes) {
@@ -408,8 +396,8 @@ app.use('/api', router);
 
 Test getting and creating
 
-##Routes for Single Recipes (id)
 
+##Routes for Single Recipes (id)
 
 We’ve handled the group for routes ending in /recipes. Let’s now handle the routes for when we pass in a parameter like a recipe's id.
 
@@ -421,7 +409,7 @@ The things we’ll want to do for this route, which will end in /recipes/:recipe
 
 Add another router.route() to handle all requests that have a :recipe_id attached to them.
 
-```
+```js
 // on routes that end in /recipes
 // ----------------------------------------------------
 router.route('/recipes')
@@ -443,15 +431,9 @@ router.route('/recipes/:recipe_id')
 // REGISTER OUR ROUTES -------------------------------
 ```
 
-Add `app.use(express.static('app'))`
+Serve our static content. Add `app.use(express.static('app'))`:
 
-final
-```
-// server.js
-
-// BASE SETUP
-// =============================================================================
-
+```js
 // call the packages we need
 
 var express = require('express');
@@ -543,7 +525,9 @@ app.listen(port);
 console.log('Magic happens on port ' + port);
 ```
 
-Adding / removing one recipe into our database:
+##Adding / Removing Recipes
+
+We will do this first in Mongo.
 
 https://docs.mongodb.com/v3.2/tutorial/insert-documents/
 
@@ -554,22 +538,21 @@ $ mongo
 > show dbs
 > use recipe-api
 > show collections
-> db.recipes.insert()
+> db.recipes.insert() 
 > db.recipes.find()
 > db.recipes.deleteOne( { name : "recipe1404" } )
 ```
 
-Add a recipe using postman. Note that only the name is inserted.
+Add a recipe using postman. Note that only the name is inserted. This is our schema at work.
 
 Use the mongoose create function:
 
-```
+```js
     // create a recipe (accessed at POST http://localhost:8080/api/recipes)
     .post(function (req, res) {
 
         var recipe = new Recipe(req);      // create a new instance of the Recipe model
         // recipe.name = req.body.name;  // set the recipes name (comes from the request)
-        // recipe.title = req.body.title;
 
         // save the recipe and check for errors
         Recipe.create(req.body, function (err) {
@@ -591,7 +574,7 @@ $ mongo
 
 Change the $http call to get info from the db:
 
-```
+```js
 angular.module('recipeApp').component('recipeList', {
     templateUrl: 'recipe-list/recipe-list.template.html',
     controller: function RecipeListController($http) {
@@ -607,9 +590,9 @@ angular.module('recipeApp').component('recipeList', {
 });
 ```
 
-date
+Server date:
 
-```
+```js
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
@@ -642,7 +625,7 @@ Change the url for recipe to use _id:
 
 Ammend the $http call:
 
-```
+```js
 angular.module('recipeDetail').component('recipeDetail', {
     templateUrl: 'recipe-detail/recipe-detail.template.html',
     controller: ['$http', '$routeParams',
@@ -664,7 +647,7 @@ angular.module('recipeDetail').component('recipeDetail', {
 
 Review the json and add using postman
 
-```
+```js
 {
   "name": "recipe1309", 
   "title": "Lasagna", 
@@ -680,7 +663,7 @@ Items not specified in our model are not added.
 
 Ammend the schema:
 
-```
+```js
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
