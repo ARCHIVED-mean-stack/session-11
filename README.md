@@ -1,10 +1,16 @@
-#MEAN Session Twelve
+#MEAN Session Eleven
 
 In this class we pick up our Recipes page and add an api to the (already built) front end.
 
-`npm install`
+`$ npm install`
 
-Our exercise used Browser Sync for its server. We'll use Express instead:
+`$ gulp`
+
+Review the project. 
+
+Trace the use of components from index.html to the recipe-detail and recipe-lst directories. Note the use of static json files for data.
+
+Our exercise used BrowserSync for its server. We'll begin by using Express instead. Halt the gulp process and install express:
 
 `$ npm install --save express`
 
@@ -23,6 +29,8 @@ app.get('/', function(req, res) {
 app.listen(port);
 console.log('Server running at ' + port);
 ```
+
+Now run `node server` and the view is gone. Recall, we need to specify static assets. We'll do this later.
 
 ###Rest API
 * A URL route schema to map requests to app actions
@@ -49,10 +57,9 @@ app.get('/', function (req, res) {
     console.dir(res);
 });
 ```
+Note that the server needs to be restarted in order for us to see the results.
 
 Refresh the browser and note the res (response) object being dumped into the console.
-
-Note that the server needs to be restarted in order for us to see the results. 
 
 ##Install nodemon
 
@@ -62,11 +69,11 @@ Note that the server needs to be restarted in order for us to see the results.
 
 Run the app using `$ PORT=9003 nodemon server.js` 
 
-Any changes to server.js will restart the app. 
+Any changes to server.js will restart the app. Comment `console.dir(res);` out and save to see the refresh.
 
 You wil need to keep an eye on the nodemon process during this exercise to see if it is hanging.
 
-###GET Requests
+###GET Requests with Parameters
 
 ```js
 app.get('/recipe/:name', function(req, res) {
@@ -76,7 +83,7 @@ app.get('/recipe/:name', function(req, res) {
 
 Will log the param to the terminal.
 
-Run `http://localhost:3001/recipe/lasagne` noting the terminal console's output.
+Run `http://localhost:XXXX/recipe/lasagne` noting the terminal console's output.
 
 
 ###Mongoose.js
@@ -95,14 +102,12 @@ Use NPM to install this dependency and update your package.json file.
 
 [Body Parser](https://www.npmjs.com/package/body-parser) parses and places incoming requests in a `req.body` property so our handlers can use them.
 
-`npm install body-parser --save`
+Run `npm install body-parser --save`
 
 
 ###Update server.js:
 
 ```js
-// call the packages we need
-
 var express = require('express');
 var mongoose = require('mongoose');
 var app = express();
@@ -122,7 +127,7 @@ var port = process.env.PORT || 8080;        // set our port
 // =============================================================================
 var router = express.Router();              // get an instance of the express Router
 
-// test route to make sure everything is working (accessed at GET http://localhost:8080/api)
+// test route to make sure everything is working (accessed at GET http://localhost:XXXX/api)
 router.get('/', function (req, res) {
     res.json({ message: 'hello from our api' });
 });
@@ -139,14 +144,14 @@ app.listen(port);
 console.log('Listening on port ' + port);
 ```
 
-Note that we are using Express' Router. 
+Note that we are using Express' Router: `express.Router();` and have directed express to use `/api` for all its calls: `app.use('/api', router);`
 
-http://expressjs.com/en/api.html
+See the [Express api documentation](http://expressjs.com/en/api.html) for details.
 
-Test the api url in a browser.
+Test the api url in a browser. You should see the return json.
 
 
-###Define Data Models
+###Define a Mongoose Model
 
 Create a new folder called models and add a new file recipe.js for our Recipe Model.
 
@@ -163,7 +168,7 @@ var RecipeSchema = new Schema({
 module.exports = mongoose.model('Recipe', RecipeSchema);
 ```
 
-This schema makes sure we're getting and setting well-formed data to and from the Mongo collection. 
+This schema makes sure we're getting and setting well-formed data to and from the Mongo collection. We're starting out with a simple String element.
  
 The last line creates the Recipe model object, with built in Mongo interfacing methods. We'll refer to this Recipe object in other files.
  
@@ -174,15 +179,12 @@ Ensure that `var Recipe = require('./models/recipe');` is in server.js
 
 // BASE SETUP
 // =============================================================================
-
 ...
-
-var Recipe = require('./models/recipe');;
-
+var Recipe = require('./models/recipe');
 ...
 ```
 
-`router.use()` and `next()` - we can perform functions in the `use` and then continuing processing using `next()`:
+Add a function for the router that will allow us to perform logging. This is middleware that fires on all requests:
 
 ```js
 router.use(function(req, res, next) {
@@ -192,7 +194,9 @@ router.use(function(req, res, next) {
 });
 ```
 
-Completed:
+`router.use()` and `next()` - we can perform logging here and then continue to the next route using `next()`. Using middleware we can do validations to make sure that everything coming from a request is sound. We can throw errors here in case something is wrong or can do some extra logging for analytics or any statistics we’d like to keep. This is frequently used to check for logged in status.
+
+Here is the completed server file to this point:
 
 ```js
 // call the packages we need
@@ -225,7 +229,7 @@ router.use(function (req, res, next) {
     next(); // make sure we go to the next routes and don't stop here
 });
 
-// test route to make sure everything is working (accessed at GET http://localhost:8080/api)
+// test route to make sure everything is working (accessed at GET http://localhost:XXXX/api)
 router.get('/', function (req, res) {
     res.json({ message: 'hooray! welcome to our api!' });
 });
@@ -271,6 +275,8 @@ router.route('/recipes')
     });
 ```
 
+###Test in Postman
+
 Since this is a post we need to use postman to test it. Use `{ "name" : "berries" }` on a post. We might also change the res.send value to something more useful:
 
 ```js
@@ -282,7 +288,20 @@ recipe.save(function(err) {
 });
 ```
 
-Here's the complete server.js file.
+###Mongo
+
+Run mongo in a new terminal to check the creation.
+
+```
+$ mongo
+> show dbs
+> use recipe-api
+> show collections
+> db.recipes.find()
+```
+
+
+Here's the complete server.js file to this point.
 
 ```js
 // call the packages we need
@@ -386,10 +405,8 @@ router.route('/recipes')
         recipe.save(function (err) {
             if (err)
                 res.send(err);
-
             res.json({ message: 'Recipe created!' });
         });
-
     })
 
     // get all the recipes (accessed at GET http://localhost:8080/api/recipes)
@@ -397,17 +414,14 @@ router.route('/recipes')
         Recipe.find(function (err, recipes) {
             if (err)
                 res.send(err);
-
             res.json(recipes);
         });
     });
 
 // REGISTER OUR ROUTES -------------------------------
-// all of our routes will be prefixed with /api
-app.use('/api', router);
 ```
 
-Test getting and creating. Log into mongo cli and use `db.recipes.remove({})` to destroy them if necessary.
+Test getting and creating in postman. Log into mongo cli and use `db.recipes.remove({})` to destroy them if necessary.
 
 
 ##Routes for Single Recipes (id)
@@ -454,20 +468,12 @@ Serve our static content. Add `app.use(express.static('app'))`
 See http://expressjs.com/en/api.html
 
 ```js
-// call the packages we need
-...
-// configure app to use bodyParser()
 // this will let us get the data from a POST
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(express.static('app'))
-
 ...
-// START THE SERVER
-// =============================================================================
-app.listen(port);
-console.log('Magic happens on port ' + port);
 ```
 
 Test by going to the root in the browser e.g. `http://localhost:9003/#!/`
@@ -551,9 +557,6 @@ angular.module('recipeApp').component('recipeList', {
             function (response) {
                 self.recipes = response.data;
             }
-        );
-    }
-});
 ```
 
 View in the browser. 
