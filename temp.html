@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ES6</title>
+</head>
+<body>
+
+  <style>
+  .wrap {
+    min-height: 100vh;
+    /*1vh = 1% of viewport height*/
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    font-family: sans-serif;
+    font-weight: 100;
+    color:white;
+  }
+
+  .box {
+    background:black url(https://unsplash.it/1500/1500?image=560&blur=0.5) center fixed no-repeat;
+    width:50px;
+    height:50px;
+    padding:50px;
+    position: relative;
+  }
+
+  .box h2 {
+    position: absolute;
+    width:100%;
+    font-size: 100px;
+    top:0;
+  }
+
+  .box p {
+    position: absolute;
+    width:100%;
+    bottom:0;
+  }
+
+  </style>
+
+  <div class="wrap">
+    <div class="box">
+      <h2>Hello</h2>
+      <p class="social">@social</p>
+    </div>
+  </div>
+
+  <script>
+  var width = 100;
+  let height = 100;
+  const key = 'abc123';
+  </script>
+
+</body>
+</html>
