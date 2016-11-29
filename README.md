@@ -639,6 +639,462 @@ https://www.browsersync.io/docs/options/#option-proxy
 
 `proxy: "localhost:8888"`
 
+=======
+
+
+#Notes
+
+Start with index.html
+
+Add CSS to create the animations.
+
+```
+    .box {
+
+      transition: width 0.2s, height 0.6s;
+
+    }
+
+    .box.opening {
+      width:500px;
+      height:500px;
+    }
+```
+
+Refresh and test by adding the opening class to the box div.
+
+```
+    .box h2 {
+
+      transform:translateX(-200%);
+      transition: all 0.5s;
+
+    }
+
+    .box p {
+
+      transform:translateX(200%);
+      transition: all 0.5s;
+
+    }
+
+    .box.open > * {
+      transform:translateX(0%);
+    }
+
+```
+
+Refresh and test by adding the opening and open class to the box div.
+
+
+##JavaScript
+
+
+###Variables - var
+
+1. var can change
+```
+var width = 100;
+width = 200;
+```
+
+and can be used 2x without errors:
+```
+var width = 100;
+var width = 200;
+```
+
+
+2. They have function scope
+```
+function setWidth(){
+	var width = 100;
+	console.log('inside' + width);
+}
+
+setWidth();
+
+console.log('outside' + width);
+```
+
+3. Problem with var (scope leakage)
+```
+var age = 100;
+if(age > 12){
+	var dogYears = age * 7
+	console.log(`You are ${dogYears} dog years old.`);
+}
+
+console.log(dogYears);
+```
+
+`let` and `const` are scoped to the block (block scoped).
+
+`let dogYears = age * 7`
+`const dogYears = age * 7`
+
+`let` and `const` vars cannot be reused.
+
+```
+let width = 100;
+let width = 200;
+```
+
+You can update a `let` var
+
+```
+let width = 100;
+    width = 200;
+```
+
+`let` is scoped to the block (contrast with var)
+
+```
+let points = 50;
+let winner = false;
+
+if(points > 40){
+	let winner = true
+}
+
+console.log(winner)
+```
+
+`const` cannot be updated
+
+```
+const key = '123abc';
+key = 'abcd1234'
+```
+##Arrow Functions
+
+1. concise
+2. implicit returns
+3. don't rebind the value of `this`
+
+```
+const names = ['alex', 'sarah', 'julio'];
+
+const fullNames = names.map(function(name){
+	return `${name} developer`;
+});
+
+console.log(fullNames);
+```
+
+1. concise
+```
+const names = ['alex', 'sarah', 'julio'];
+
+const fullNames2 = names.map((name) => {
+  return `${name} developer`;
+});
+
+// if only one param is passed no need for brackets
+
+const fullNames3 = names.map(name => {
+  return `${name} developer`;
+});
+
+console.log(fullNames3);
+```
+
+2. Implicit return 
+
+```
+const names = ['alex', 'sarah', 'julio'];
+
+// delete return, move to one line and delete curly brackets
+const fullNames4 = names.map(name => `${name} developer`);
+
+// no arguments
+const fullNames5 = names.map(() => `good developer`);
+
+console.log(fullNames5);
+```
+
+Named Functions
+
+```
+function sayMyName(name){
+	alert(`hello ${name}`);
+}
+```
+
+##All Arrow Functions are Anonymous Functions
+
+But you can put them in a variable
+
+```
+const sayMyName = (name) => { alert(`hello ${name}`)}
+
+sayMyName('Daniel');
+```
+
+In arrow functions the `this` keyword does not get rebound.
+
+##Our script
+
+```
+<script>
+const box = document.querySelector('.box');
+box.addEventListener('click', function() {
+  	console.log(this)
+});
+</script>
+```
+
+vs arrow function - still bound to the parent scope.
+
+```
+<script>
+const box = document.querySelector('.box');
+box.addEventListener('click', () => {
+  console.log(this)
+});
+</script>
+```
+
+Arrow functions are good for simple one line utility functions.
+
+```
+<script>
+const box = document.querySelector('.box');
+box.addEventListener('click', function() {
+  this.classList.toggle('opening');
+});
+</script>
+```
+
+When do we use arrow functions?
+
+Error here. `this` is scoped to the outer function:
+
+```
+<script>
+const box = document.querySelector('.box');
+box.addEventListener('click', function() {
+  this.classList.toggle('opening');
+  setTimeout(function(){
+    // console.log(this.classList);
+    // console.log(this);
+    this.classList.toggle('open');
+  }, 500)
+});
+</script>
+```
+
+In the above the second use of this is bound to the window because we have entered a new function.
+
+Fixed by declaring a variable:
+
+```
+<script>
+const box = document.querySelector('.box');
+box.addEventListener('click', function() {
+  var self = this; 
+  this.classList.toggle('opening');
+  setTimeout(function(){
+    self.classList.toggle('open');
+  }, 500);
+});
+</script>
+```
+
+Arrow functions inherit the value of this: 
+
+```
+<script>
+const box = document.querySelector('.box');
+box.addEventListener('click', function() {
+  this.classList.toggle('opening');
+  setTimeout(() => {
+    this.classList.toggle('open');
+  }, 500);
+});
+</script>
+```
+
+Reverse the sequence (uses destructuring):
+
+```
+<script>
+const box = document.querySelector('.box');
+box.addEventListener('click', function() {
+
+  let first = 'opening';
+  let second = 'open';
+
+  if(this.classList.contains(first)){
+    [first, second] = [second, first];
+  }
+  this.classList.toggle(first);
+  setTimeout(() => {
+    this.classList.toggle(second);
+  }, 500);
+});
+</script>
+```
+
+
+
+
+
+
+Old school techniques.
+
+
+
+=============
+
+
+```
+<script>
+var box = document.querySelector('.box');
+box.addEventListener('click', function() {
+  console.log(this)
+});
+</script>
+```
+
+```
+<script>
+var box = document.querySelector('.box');
+box.addEventListener('click', function() {
+  this.classList.toggle('opening');
+});
+</script>
+```
+
+Error here. `this` is scoped to the outer function:
+
+```
+<script>
+var box = document.querySelector('.box');
+box.addEventListener('click', function() {
+  this.classList.toggle('opening');
+  setTimeout(function(){
+    // console.log(this.classList);
+    // console.log(this);
+    this.classList.toggle('open');
+  }, 500)
+});
+</script>
+```
+
+Fixed:
+
+```
+<script>
+var box = document.querySelector('.box');
+box.addEventListener('click', function() {
+  var self = this; 
+  this.classList.toggle('opening');
+  setTimeout(function(){
+    self.classList.toggle('open');
+  }, 500);
+});
+</script>
+```
+
+```
+<script>
+var box = document.querySelector('.box');
+box.addEventListener('click', function() {
+  var self = this; 
+  var first = 'opening';
+  var second = 'open';
+  
+  this.classList.toggle(first);
+  setTimeout(function(){
+    self.classList.toggle(second);
+  }, 500);
+});
+</script>
+```
+
+
+```
+<script>
+var box = document.querySelector('.box');
+box.addEventListener('click', function() {
+  var self = this; 
+  var first = 'opening';
+  var second = 'open';
+  if(this.classList.contains(first)){
+    [first, second] = [second, first];
+  }
+  this.classList.toggle(first);
+  setTimeout(function(){
+    self.classList.toggle(second);
+  }, 500);
+});
+</script>
+```
+
+
+```
+  <script>
+  const box = document.querySelector('.box');
+  box.addEventListener('click', function() {
+
+    let first = 'opening';
+    let second = 'open';
+
+    if(this.classList.contains(first)){
+      [first, second] = [second, first];
+    }
+    this.classList.toggle(first);
+    setTimeout(() => {
+      this.classList.toggle(second);
+    }, 500);
+  });
+  </script>
+  ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
