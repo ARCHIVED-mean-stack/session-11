@@ -127,19 +127,16 @@ var port = process.env.PORT || 8080;        // set our port
 // =============================================================================
 var router = express.Router();              // get an instance of the express Router
 
-// test route to make sure everything is working (accessed at GET http://localhost:XXXX/api)
+// test route accessed at GET http://localhost:XXXX/api
 router.get('/', function (req, res) {
     res.json({ message: 'hello from our api' });
 });
 
 // more routes for our API will happen here
 
-// REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
 app.use('/api', router);
 
-// START THE SERVER
-// =============================================================================
 app.listen(port);
 console.log('Listening on port ' + port);
 ```
@@ -168,20 +165,16 @@ var RecipeSchema = new Schema({
 module.exports = mongoose.model('Recipe', RecipeSchema);
 ```
 
-This schema makes sure we're getting and setting well-formed data to and from the Mongo collection. We're starting out with a simple String element.
+A schema makes sure we're getting and setting well-formed data to and from the Mongo collection. We're starting out with a simple String element.
  
 The last line creates the Recipe model object, with built in Mongo interfacing methods. We'll refer to this Recipe object in other files.
  
 Ensure that `var Recipe = require('./models/recipe');` is in server.js
 
 ```js
-// server.js
 
-// BASE SETUP
-// =============================================================================
-...
 var Recipe = require('./models/recipe');
-...
+
 ```
 
 Add a function for the router that will allow us to perform logging. This is middleware that fires on all requests:
@@ -194,7 +187,7 @@ router.use(function(req, res, next) {
 });
 ```
 
-`router.use()` and `next()` - we can perform logging here and then continue to the next route using `next()`. Using middleware we can do validations to make sure that everything coming from a request is sound. We can throw errors here in case something is wrong or can do some extra logging for analytics or any statistics we’d like to keep. This is frequently used to check for logged in status.
+`router.use()` and `next()` - we can perform logging here and then continue to the next route using `next()`. Using middleware we can do validations, throw errors in case something is wrong or do some extra logging for analytics or any statistics we’d like to keep. This is frequently used to check for logged in status.
 
 Here is the completed server file to this point:
 
@@ -377,12 +370,10 @@ console.log('Magic happens on port ' + port);
 Let's use GET to see the recipes we are creating.
 
 ```js
-// get all the recipes (accessed at GET http://localhost:XXXX/api/recipes)
-    .get(function(req, res) {
-        Recipe.find(function(err, recipes) {
+    .get(function (req, res) {
+        Recipe.find(function (err, recipes) {
             if (err)
                 res.send(err);
-
             res.json(recipes);
         });
     });
@@ -391,25 +382,16 @@ Let's use GET to see the recipes we are creating.
 e.g.
 
 ```js
-// on routes that end in /recipes
-// ----------------------------------------------------
 router.route('/recipes')
-
-    // create a recipe (accessed at POST http://localhost:8080/api/recipes)
     .post(function (req, res) {
-
-        var recipe = new Recipe();      // create a new instance of the Recipe model
-        recipe.name = req.body.name;  // set the recipes name (comes from the request)
-
-        // save the recipe and check for errors
+        var recipe = new Recipe();
+        recipe.name = req.body.name;
         recipe.save(function (err) {
             if (err)
                 res.send(err);
-            res.json({ message: 'Recipe created!' });
+            res.send(recipe);
         });
     })
-
-    // get all the recipes (accessed at GET http://localhost:8080/api/recipes)
     .get(function (req, res) {
         Recipe.find(function (err, recipes) {
             if (err)
@@ -417,11 +399,9 @@ router.route('/recipes')
             res.json(recipes);
         });
     });
-
-// REGISTER OUR ROUTES -------------------------------
 ```
 
-Test getting and creating in postman. Log into mongo cli and use `db.recipes.remove({})` to destroy them if necessary.
+Test getting in postman. Use the mongo cli `db.recipes.remove({})` to destroy them if necessary.
 
 
 ##Routes for Single Recipes (id)
@@ -437,11 +417,6 @@ The things we’ll want to do for this route, which will end in /recipes/:recipe
 Add another router.route() to handle all requests that have a :recipe_id attached to them.
 
 ```js
-// on routes that end in /recipes
-// ----------------------------------------------------
-router.route('/recipes')
-    ...
-
 // on routes that end in /recipe/:recipe_id
 // ----------------------------------------------------
 router.route('/recipes/:recipe_id')
@@ -463,7 +438,7 @@ Test using postman.
 
 ##Integration with the Frontend
 
-Serve our static content. Add `app.use(express.static('app'))`
+Serve our static content. Add `app.use(express.static('app'))` to server.js
 
 See http://expressjs.com/en/api.html
 
@@ -476,12 +451,12 @@ app.use(express.static('app'))
 ...
 ```
 
-Test by going to the root in the browser e.g. `http://localhost:9003/#!/`
+Test by going to the root in the browser e.g. `http://localhost:XXXX/#!/`
 
 
 ##Adding / Removing Recipes
 
-Add a recipe using Mongo and our recipes.json.
+Add a recipe using Mongo `db.recipes.insert()` and our recipes.json.
 
 https://docs.mongodb.com/v3.2/tutorial/insert-documents/
 
@@ -494,7 +469,7 @@ $ mongo
 > show collections
 > db.recipes.insert() 
 > db.recipes.find()
-> db.recipes.deleteOne( { name : "recipe1404" } )
+> db.recipes.deleteOne( { name : "recipe1404" } ) // ???
 > db.recipes.remove({})
 ```
 
@@ -507,18 +482,12 @@ Use the mongoose create function:
 ```js
     // create a recipe (accessed at POST http://localhost:8080/api/recipes)
     .post(function (req, res) {
-
-        var recipe = new Recipe(req);      // create a new instance of the Recipe model
-        // recipe.name = req.body.name;  // set the recipes name (comes from the request)
-
-        // save the recipe and check for errors
+        var recipe = new Recipe(req); 
         Recipe.create(req.body, function (err) {
             if (err)
                 res.send(err);
-
             res.send(recipe);
         });
-
     })
 ```
 
@@ -559,7 +528,7 @@ angular.module('recipeApp').component('recipeList', {
             }
 ```
 
-View in the browser. 
+View in the browser. Note - the detail view is still using our .json file.
 
 
 ##Detail View
@@ -600,7 +569,9 @@ angular.module('recipeDetail').component('recipeDetail', {
 });
 ```
 
-Review the json, remove all recipes in mongo and add one with the additional content using postman:
+Test in browser - this only return the description because the other data is missing.
+
+Review the json, remove all recipes in mongo cli `db.recipes.remove({})` and add one with the additional content using postman:
 
 ```js
 {
@@ -609,12 +580,13 @@ Review the json, remove all recipes in mongo and add one with the additional con
   "date": "2013-09-01", 
   "description": "Lasagna noodles piled high and layered full of three kinds of cheese to go along with the perfect blend of meaty and zesty, tomato pasta sauce all loaded with herbs.", 
   "mainImageUrl": "img/home/lasagna-1.png",
+  "image": "lasagne.png",
   "images": ["lasagna-1.png","lasagna-2.png","lasagna-3.png","lasagna-4.png"],
   "ingredients": ["lasagna pasta", "tomatoes", "onions", "ground beef", "garlic", "cheese"]
 }
 ```
 
-Again, content not specified in our model are not added.
+Again, content not specified in our model is not added.
 
 Ammend the schema:
 
@@ -629,7 +601,7 @@ var RecipeSchema = new Schema({
     description: String,
     image: String,
     images: [],
-    ingredients: {}
+    ingredients: []
 });
 
 module.exports = mongoose.model('Recipe', RecipeSchema);
