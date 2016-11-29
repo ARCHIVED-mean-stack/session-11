@@ -1,5 +1,10 @@
 #MEAN Session Eleven
 
+##Homework
+- get the gulpfile working with gulp-nodemon and browser sync working together
+- FINAL PROJECT - build an admin interface to the recipesApp that allows a user to create a new recipe 
+- this should include form validation
+
 In this class we pick up our Recipes page and add an api to the (already built) front end.
 
 `$ npm install`
@@ -609,5 +614,32 @@ module.exports = mongoose.model('Recipe', RecipeSchema);
 
 
 ##Notes
+
+`https://github.com/sogko/gulp-recipes/blob/master/browser-sync-nodemon-expressjs/gulpfile.js`
+
+`$ sudo npm install --save-dev gulp-nodemon`
+
+In gulpfile:
+
+`var nodemon = require('gulp-nodemon');`
+
+https://www.npmjs.com/package/gulp-nodemon
+
+```
+gulp.task('start', function () {
+  nodemon({
+    script: 'server.js'
+  , ext: 'js html'
+  , env: { 'NODE_ENV': 'development' }
+  })
+})
+```
+
+https://www.browsersync.io/docs/options/#option-proxy
+
+`proxy: "localhost:8888"`
+
+
+
 
 
